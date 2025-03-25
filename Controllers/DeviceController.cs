@@ -78,6 +78,31 @@ public class DeviceController : ControllerBase
         }
         
     }
+    
+    [HttpPut("mac/{macAddress}")]
+    public async Task<ActionResult<Device>> UpdateDevice(string macAddress, [FromBody] Device request)
+    {
+        try
+        {
+            var device = await _context.Devices.Where(d => d.MacAddress == macAddress).FirstOrDefaultAsync();
+            device.MacAddress = request.MacAddress;
+            device.Brand = request.Brand ?? null;
+            device.Processor = request.Processor ?? null;
+            device.RAM = request.RAM ?? null;
+            device.Storage = request.Storage ?? null;
+            device.IpAddress = request.IpAddress ?? null;
+            device.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+            
+            return Ok(device);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "500 - Internal server error");
+        }
+        
+    }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<Device>> SofDeleteDevice(int id)
