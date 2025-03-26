@@ -27,6 +27,12 @@ public class Device
     public required int RoomId { get; set; }
     
     /// <summary>
+    /// Device name (required)
+    /// </summary>
+    [MaxLength(50)]
+    public string? Name { get; set; }
+    
+    /// <summary>
     /// Device brand (required)
     /// </summary>
     [MaxLength(50)]

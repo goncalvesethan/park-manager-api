@@ -61,6 +61,7 @@ public class DeviceController : ControllerBase
             device.ParkId = request.ParkId;
             device.RoomId = request.RoomId;
             device.MacAddress = request.MacAddress;
+            device.Name = request.Name ?? null;
             device.Brand = request.Brand ?? null;
             device.Processor = request.Processor ?? null;
             device.RAM = request.RAM ?? null;
