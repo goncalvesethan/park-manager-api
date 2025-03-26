@@ -45,6 +45,11 @@ public class User
     [DataType(DataType.Password)]
     public required string Password { get; set; }
     
+    /// <summary>
+    /// User is admin (required)
+    /// </summary>
+    public bool? IsAdmin { get; set; }
+    
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime? DisabledAt { get; set; }

@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.Password == request.Password);
+        var user = await _context.Users.Where(u => u.IsAdmin == true).FirstOrDefaultAsync(u => u.Email == request.Email && u.Password == request.Password);
 
         if (user == null)
         {
