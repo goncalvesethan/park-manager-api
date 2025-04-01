@@ -19,7 +19,6 @@ public class Action
     /// Device ID (required) => foreign key to device table
     /// </summary>
     [Required]
-    [MaxLength(50)]
     public required int DeviceId { get; set; }
     
     /// <summary>
