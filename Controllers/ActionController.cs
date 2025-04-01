@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
 using Action = ParkManagerAPI.Models.Action;
@@ -7,6 +8,7 @@ namespace ParkManagerAPI.Controllers;
 
 [ApiController]
 [Route("api/actions")]
+[Authorize]
 
 public class ActionController : ControllerBase
 {
@@ -24,6 +26,7 @@ public class ActionController : ControllerBase
         return Ok(actions);
     }
     
+    [AllowAnonymous]
     [HttpGet("mac/{macAddress}")]
     public async Task<ActionResult<Action>> GetDeviceAction(string macAddress)
     {
@@ -71,6 +74,7 @@ public class ActionController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
     [HttpPatch("mac/{macAddress}")]
     public async Task<ActionResult<Action>> SetActionAsDone(string macAddress)
     {

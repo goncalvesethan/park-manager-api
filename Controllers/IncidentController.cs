@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
 using Action = ParkManagerAPI.Models.Action;
@@ -7,6 +8,7 @@ namespace ParkManagerAPI.Controllers;
 
 [ApiController]
 [Route("api/incidents")]
+[Authorize]
 
 public class IncidentController : ControllerBase
 {

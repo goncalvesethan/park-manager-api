@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
 
@@ -6,6 +7,7 @@ namespace ParkManagerAPI.Controllers;
 
 [ApiController]
 [Route("api/devices")]
+[Authorize]
 
 public class DeviceController : ControllerBase
 {
@@ -80,6 +82,7 @@ public class DeviceController : ControllerBase
         
     }
 
+    [AllowAnonymous]
     [HttpPatch("mac/{macAddress}/offline")]
     public async Task<ActionResult<Device>> SetDeviceOffline(String macAddress)
     {
@@ -101,6 +104,7 @@ public class DeviceController : ControllerBase
         }
     }
     
+    [AllowAnonymous]
     [HttpPut("mac/{macAddress}")]
     public async Task<ActionResult<Device>> UpdateDevice(string macAddress, [FromBody] Device request)
     {
