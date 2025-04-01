@@ -79,6 +79,27 @@ public class DeviceController : ControllerBase
         }
         
     }
+
+    [HttpPatch("mac/{macAddress}/offline")]
+    public async Task<ActionResult<Device>> SetDeviceOffline(String macAddress)
+    {
+        try
+        {
+            var device = await _context.Devices.Where(d => d.MacAddress == macAddress).FirstOrDefaultAsync();
+
+            device.IpAddress = null;
+            device.UpdatedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(device);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "500 - Internal server error");
+        }
+    }
     
     [HttpPut("mac/{macAddress}")]
     public async Task<ActionResult<Device>> UpdateDevice(string macAddress, [FromBody] Device request)
