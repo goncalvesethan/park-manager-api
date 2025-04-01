@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
 
@@ -6,6 +7,7 @@ namespace ParkManagerAPI.Controllers;
 
 [ApiController]
 [Route("api/rooms")]
+[Authorize]
 
 public class RoomController : ControllerBase
 {
