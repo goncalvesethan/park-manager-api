@@ -63,7 +63,6 @@ public class Device
     /// <summary>
     /// Device IP address  (required)
     /// </summary>
-    [Required]
     public string? IpAddress { get; set; }
 
     public bool IsOnline => !string.IsNullOrEmpty(IpAddress);
