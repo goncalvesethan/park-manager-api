@@ -19,6 +19,12 @@ public class IncidentController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Récupère la liste de tous les incidents (non supprimés).
+    /// </summary>
+    /// <returns>Liste des incidents</returns>
+    /// <response code="200">Liste récupérée avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpGet]
     public async Task<ActionResult<List<Incident>>> GetAll()
     {
@@ -26,6 +32,13 @@ public class IncidentController : ControllerBase
         return Ok(incidents);
     }
 
+    /// <summary>
+    /// Récupère un incident à partir de son ID.
+    /// </summary>
+    /// <param name="id">ID de l'incident</param>
+    /// <returns>L'incident correspondant</returns>
+    /// <response code="200">Incident trouvé</response>
+    /// <response code="404">Aucun incident trouvé avec cet ID</response>
     [HttpGet("{id}")]
     public async Task<ActionResult<Incident>> GetById(int id)
     {
@@ -35,6 +48,13 @@ public class IncidentController : ControllerBase
         return Ok(incident);
     }
 
+    /// <summary>
+    /// Crée un nouvel incident.
+    /// </summary>
+    /// <param name="request">Données de l'incident à créer</param>
+    /// <returns>Le nouvel incident créé</returns>
+    /// <response code="201">Incident créé avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpPost]
     public async Task<ActionResult<Incident>> CreateAction([FromBody] Incident request)
     {
@@ -56,6 +76,13 @@ public class IncidentController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Marque un incident comme "fermé".
+    /// </summary>
+    /// <param name="id">ID de l'incident</param>
+    /// <returns>L'incident mis à jour</returns>
+    /// <response code="200">Incident fermé avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpPatch("{id}/close")]
     public async Task<ActionResult<Incident>> SetAsClosed(int id)
     {
@@ -77,6 +104,14 @@ public class IncidentController : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Met à jour un incident existant via son ID.
+    /// </summary>
+    /// <param name="id">ID de l'incident</param>
+    /// <param name="request">Données mises à jour</param>
+    /// <returns>L'incident mis à jour</returns>
+    /// <response code="200">Mise à jour réussie</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpPut("{id}")]
     public async Task<ActionResult<Incident>> UpdateDevice(int id, [FromBody] Incident request)
     {
@@ -102,6 +137,13 @@ public class IncidentController : ControllerBase
         
     }
 
+    /// <summary>
+    /// Supprime logiquement un incident (soft delete).
+    /// </summary>
+    /// <param name="id">ID de l'incident</param>
+    /// <returns>Réponse vide</returns>
+    /// <response code="204">Suppression réussie</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpDelete("{id}")]
     public async Task<ActionResult<Action>> SofDeletePark(int id)
     {

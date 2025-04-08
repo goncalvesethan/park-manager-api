@@ -18,6 +18,12 @@ public class UserController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Récupère la liste de tous les utilisateurs.
+    /// </summary>
+    /// <returns>Liste des utilisateurs</returns>
+    /// <response code="200">Liste récupérée avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpGet]
     public async Task<ActionResult<List<User>>> GetAll()
     {
@@ -25,6 +31,13 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    /// <summary>
+    /// Récupère un utilisateur à partir de son ID.
+    /// </summary>
+    /// <param name="id">ID de l'utilisateur</param>
+    /// <returns>L'utilisateur correspondant</returns>
+    /// <response code="200">Utilisateur trouvé</response>
+    /// <response code="404">Aucun utilisateur trouvé avec cet ID</response>
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetById(int id)
     {
@@ -34,6 +47,13 @@ public class UserController : ControllerBase
         return Ok(user);
     }
     
+    /// <summary>
+    /// Crée un nouvel utilisateur.
+    /// </summary>
+    /// <param name="request">Données de l'utilisateur à créer</param>
+    /// <returns>Le nouvel utilisateur créé</returns>
+    /// <response code="201">Utilisateur créé avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpPost]
     public async Task<ActionResult<User>> CreateUser([FromBody]User request)
     {
@@ -54,6 +74,14 @@ public class UserController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Met à jour un utilisateur existant via son ID.
+    /// </summary>
+    /// <param name="id">ID de l'utilisateur</param>
+    /// <param name="request">Données mises à jour</param>
+    /// <returns>L'utilisateur mis à jour</returns>
+    /// <response code="200">Mise à jour réussie</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpPut("{id}")]
     public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] User request)
     {
@@ -78,6 +106,13 @@ public class UserController : ControllerBase
         
     }
     
+    /// <summary>
+    /// Définit un utilisateur comme administrateur.
+    /// </summary>
+    /// <param name="id">ID de l'utilisateur</param>
+    /// <returns>L'utilisateur mis à jour avec le rôle administrateur</returns>
+    /// <response code="200">Utilisateur mis à jour avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpPatch("{id}/admin")]
     public async Task<ActionResult<User>> SetUserAsAdmin(int id)
     {
@@ -98,6 +133,13 @@ public class UserController : ControllerBase
         
     }
     
+    /// <summary>
+    /// Supprime logiquement un utilisateur (soft delete) via son ID.
+    /// </summary>
+    /// <param name="id">ID de l'utilisateur</param>
+    /// <returns>Réponse vide</returns>
+    /// <response code="204">Suppression réussie</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpDelete("{id}")]
     public async Task<ActionResult<User>> SofDeleteUser(int id)
     {

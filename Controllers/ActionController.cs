@@ -18,7 +18,13 @@ public class ActionController : ControllerBase
     {
         _context = context;
     }
-
+    
+    /// <summary>
+    /// Récupère la liste de toutes les actions (non supprimées).
+    /// </summary>
+    /// <returns>Une liste d'actions</returns>
+    /// <response code="200">Liste récupérée avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpGet]
     public async Task<ActionResult<List<Action>>> GetAll()
     {
@@ -26,6 +32,13 @@ public class ActionController : ControllerBase
         return Ok(actions);
     }
     
+    /// <summary>
+    /// Récupère la prochaine action en attente pour un poste à partir de son adresse MAC.
+    /// </summary>
+    /// <param name="macAddress">Adresse MAC du poste</param>
+    /// <returns>L'action en attente, ou null si aucune</returns>
+    /// <response code="200">Action trouvée</response>
+    /// <response code="404">Aucune action trouvée ou poste introuvable</response>
     [AllowAnonymous]
     [HttpGet("mac/{macAddress}")]
     public async Task<ActionResult<Action>> GetDeviceAction(string macAddress)
@@ -44,7 +57,14 @@ public class ActionController : ControllerBase
         
         
     }
-
+    
+    /// <summary>
+    /// Récupère une action à partir de son ID.
+    /// </summary>
+    /// <param name="id">Identifiant de l'action</param>
+    /// <returns>L'action correspondante</returns>
+    /// <response code="200">Action trouvée</response>
+    /// <response code="404">Aucune action trouvée avec cet ID</response>
     [HttpGet("{id}")]
     public async Task<ActionResult<Action>> GetById(int id)
     {
@@ -53,7 +73,14 @@ public class ActionController : ControllerBase
         
         return Ok(action);
     }
-
+    
+    /// <summary>
+    /// Crée une nouvelle action.
+    /// </summary>
+    /// <param name="request">Données de l'action à créer</param>
+    /// <returns>La nouvelle action créée</returns>
+    /// <response code="201">Action créée avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpPost]
     public async Task<ActionResult<Action>> CreateAction([FromBody]Action request)
     {
@@ -73,7 +100,14 @@ public class ActionController : ControllerBase
             return StatusCode(500, "500 - Internal server error");
         }
     }
-
+    
+    /// <summary>
+    /// Marque comme "faite" la prochaine action en attente pour un poste donné (via son adresse MAC).
+    /// </summary>
+    /// <param name="macAddress">Adresse MAC du poste</param>
+    /// <returns>L'action mise à jour</returns>
+    /// <response code="200">Action mise à jour avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [AllowAnonymous]
     [HttpPatch("mac/{macAddress}")]
     public async Task<ActionResult<Action>> SetActionAsDone(string macAddress)
@@ -98,6 +132,13 @@ public class ActionController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Supprime logiquement une action (soft delete).
+    /// </summary>
+    /// <param name="id">Identifiant de l'action</param>
+    /// <returns>Réponse vide</returns>
+    /// <response code="204">Suppression réussie</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpDelete("{id}")]
     public async Task<ActionResult<Action>> SofDeletePark(int id)
     {
