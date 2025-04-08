@@ -4,6 +4,9 @@
 *.user
 *.suo
 
+#Jetbrains
+.idea/
+
 # Build Features
 bin/
 obj/
