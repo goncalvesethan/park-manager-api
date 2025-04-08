@@ -18,6 +18,12 @@ public class ParkController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Récupère la liste de tous les parcs (non supprimés).
+    /// </summary>
+    /// <returns>Liste des parcs</returns>
+    /// <response code="200">Liste récupérée avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpGet]
     public async Task<ActionResult<List<Park>>> GetAll()
     {
@@ -25,6 +31,13 @@ public class ParkController : ControllerBase
         return Ok(parks);
     }
 
+    /// <summary>
+    /// Récupère un parc à partir de son ID.
+    /// </summary>
+    /// <param name="id">ID du parc</param>
+    /// <returns>Le parc correspondant</returns>
+    /// <response code="200">Parc trouvé</response>
+    /// <response code="404">Aucun parc trouvé avec cet ID</response>
     [HttpGet("{id}")]
     public async Task<ActionResult<Park>> GetById(int id)
     {
@@ -34,6 +47,13 @@ public class ParkController : ControllerBase
         return Ok(park);
     }
 
+    /// <summary>
+    /// Crée un nouveau parc.
+    /// </summary>
+    /// <param name="request">Données du parc à créer</param>
+    /// <returns>Le parc nouvellement créé</returns>
+    /// <response code="201">Parc créé avec succès</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpPost]
     public async Task<ActionResult<Park>> CreatePark([FromBody]Park request)
     {
@@ -54,6 +74,14 @@ public class ParkController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Met à jour un parc existant à partir de son ID.
+    /// </summary>
+    /// <param name="id">ID du parc</param>
+    /// <param name="request">Données mises à jour</param>
+    /// <returns>Le parc mis à jour</returns>
+    /// <response code="200">Mise à jour réussie</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpPut("{id}")]
     public async Task<ActionResult<Park>> UpdatePark(int id, [FromBody] Park request)
     {
@@ -75,6 +103,13 @@ public class ParkController : ControllerBase
         
     }
 
+    /// <summary>
+    /// Supprime logiquement un parc (soft delete) via son ID.
+    /// </summary>
+    /// <param name="id">ID du parc</param>
+    /// <returns>Réponse vide</returns>
+    /// <response code="204">Suppression réussie</response>
+    /// <response code="500">Erreur interne du serveur</response>
     [HttpDelete("{id}")]
     public async Task<ActionResult<Park>> SofDeletePark(int id)
     {

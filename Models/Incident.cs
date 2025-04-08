@@ -4,49 +4,60 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ParkManagerAPI.Models;
 
 /// <summary>
-/// Represents an action
+/// Représente un incident déclaré sur un poste.
 /// </summary>
 public class Incident
 {
     /// <summary>
-    /// Action ID (primary key)
+    /// ID de l'incident (clé primaire).
     /// </summary>
     [Key]
     [Column("id")]
     public int Id { get; set; }
-    
+
     /// <summary>
-    /// Reporter ID (required) => foreign key to users table
+    /// ID de l'utilisateur ayant signalé l'incident (clé étrangère vers la table des utilisateurs).
     /// </summary>
     [Required]
     public required int ReporterId { get; set; }
-    
+
     /// <summary>
-    /// Device ID (required) => foreign key to device table
+    /// ID du poste concerné par l'incident (clé étrangère vers la table des postes).
     /// </summary>
     [Required]
     public required int DeviceId { get; set; }
-    
+
     /// <summary>
-    /// Action type (required)
+    /// Type de l'incident (ex. : matériel, logiciel, réseau...).
     /// </summary>
     [Required]
     [MaxLength(50)]
     public required string Type { get; set; }
 
     /// <summary>
-    /// Action status (required)
+    /// Statut actuel de l'incident (ex. : open, closed).
     /// </summary>
     [MaxLength(50)]
     public string? Status { get; set; }
 
     /// <summary>
-    /// Action status (required)
+    /// Description détaillée de l'incident.
     /// </summary>
     [Column(TypeName = "TEXT")]
     public string? Description { get; set; }
-    
+
+    /// <summary>
+    /// Date et heure de création de l'incident.
+    /// </summary>
     public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// Date et heure de la dernière mise à jour.
+    /// </summary>
     public DateTime UpdatedAt { get; set; }
+
+    /// <summary>
+    /// Date de suppression logique de l'incident (soft delete).
+    /// </summary>
     public DateTime? DeletedAt { get; set; }
 }

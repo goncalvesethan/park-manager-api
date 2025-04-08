@@ -18,7 +18,14 @@ public class AuthController : ControllerBase
         _jwtService = jwtService;
         _context = dbContext;
     }
-
+    
+    /// <summary>
+    /// Authentifie un utilisateur administrateur et génère un token JWT.
+    /// </summary>
+    /// <param name="request">Données de connexion de l'utilisateur (email et mot de passe)</param>
+    /// <returns>Un token JWT si l'authentification réussit</returns>
+    /// <response code="200">Connexion réussie, retourne le token</response>
+    /// <response code="401">Identifiants invalides</response>
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
@@ -34,8 +41,17 @@ public class AuthController : ControllerBase
     }
 }
 
+/// <summary>
+/// Représente la requête d'authentification avec email et mot de passe.
+/// </summary>
 public class LoginRequest
 {
+    /// <summary>
+    /// Adresse email de l'utilisateur.
+    /// </summary>
     public required string Email { get; set; }
+    /// <summary>
+    /// Mot de passe de l'utilisateur.
+    /// </summary>
     public required string Password { get; set; }
 }

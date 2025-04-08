@@ -4,45 +4,59 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ParkManagerAPI.Models;
 
 /// <summary>
-/// Represents a room
+/// Représente une salle au sein d’un parc informatique.
 /// </summary>
 public class Room
 {
     /// <summary>
-    /// Room ID (primary key)
+    /// ID de la salle (clé primaire).
     /// </summary>
     [Key]
     public int Id { get; set; }
-    
+
     /// <summary>
-    /// Room park (required) => foreign key to parks table
+    /// ID du parc auquel la salle appartient (clé étrangère vers la table des parcs).
     /// </summary>
     [Required]
     public required int ParkId { get; set; }
-    
+
     /// <summary>
-    /// Room name (required)
+    /// Nom de la salle.
     /// </summary>
     [Required]
     [MaxLength(50)]
     public required string Name { get; set; }
-    
+
     /// <summary>
-    /// Room type (required)
+    /// Type de salle (ex. : bureau, salle serveur, salle de réunion...).
     /// </summary>
     [Required]
     [MaxLength(50)]
     public required string Type { get; set; }
 
     /// <summary>
-    /// Room capacity (required)
+    /// Capacité d’accueil de la salle (nombre de postes ou de personnes).
     /// </summary>
     [Required]
     public required int Capacity { get; set; }
 
-    
+    /// <summary>
+    /// Date et heure de création de la salle.
+    /// </summary>
     public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// Date et heure de la dernière mise à jour.
+    /// </summary>
     public DateTime UpdatedAt { get; set; }
+
+    /// <summary>
+    /// Date à laquelle la salle a été désactivée.
+    /// </summary>
     public DateTime DisabledAt { get; set; }
+
+    /// <summary>
+    /// Date de suppression logique de la salle (soft delete).
+    /// </summary>
     public DateTime? DeletedAt { get; set; }
 }
