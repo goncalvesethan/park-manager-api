@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -56,8 +57,10 @@ builder.Services.AddSwaggerGen(options =>
 // Add the database context
 builder.Services.AddDbContext<ParkManagerContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("ParkManagerDb")));
 
-// JWT configuration
+// Add custom logging service
+builder.Services.AddScoped<CustomLogger>();
 
+// JWT configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
     options =>
     {

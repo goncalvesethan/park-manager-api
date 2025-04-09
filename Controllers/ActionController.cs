@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
+using ParkManagerAPI.Services;
 using Action = ParkManagerAPI.Models.Action;
 
 namespace ParkManagerAPI.Controllers;
@@ -13,9 +14,11 @@ namespace ParkManagerAPI.Controllers;
 public class ActionController : ControllerBase
 {
     private readonly ParkManagerContext _context;
+    private readonly CustomLogger _logger;
 
-    public ActionController(ParkManagerContext context)
+    public ActionController(ParkManagerContext context, CustomLogger logger)
     {
+        _logger = logger;
         _context = context;
     }
     
@@ -92,11 +95,18 @@ public class ActionController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Action",
+                "ActionController.CreateAction",
+                $"Nouvelle action '{request.Type}' créée pour le poste {request.DeviceId}"
+            );
+            
             return CreatedAtAction(nameof(GetById), new { id = request.Id }, request);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync("error", "Action", "ActionController.CreateAction", $"Erreur lors de la création d'une action : {e.Message}");
             return StatusCode(500, "500 - Internal server error");
         }
     }
@@ -123,11 +133,18 @@ public class ActionController : ControllerBase
 
             await _context.SaveChangesAsync();
 
+            await _logger.LogAsync(
+                "info",
+                "Action",
+                "ActionController.SetActionAsDone",
+                $"Action ID {action.Id} marquée comme 'done' pour le poste MAC {macAddress}"
+            );
+            
             return Ok(action);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync("error", "Action", "ActionController.SetActionAsDone", $"Erreur lors de la mise à jour d'une action : {e.Message}");
             return StatusCode(500, "500 - Internal server error");
         }
     }
@@ -149,13 +166,20 @@ public class ActionController : ControllerBase
             action.UpdatedAt = DateTime.Now;
             action.DeletedAt = DateTime.Now;
             
+            await _logger.LogAsync(
+                "info",
+                "Action",
+                "ActionController.SofDeletePark",
+                $"Action ID {action.Id} supprimée logiquement (soft delete)"
+            );
+            
             await _context.SaveChangesAsync();
             
             return NoContent();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync("error", "Action", "ActionController.SofDeletePark", $"Erreur lors de la suppression logique d'une action : {e.Message}");
             return StatusCode(500, "500 - Internal server error");
         }
     }

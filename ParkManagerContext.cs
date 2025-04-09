@@ -10,5 +10,7 @@ public class ParkManagerContext : DbContext
     public required DbSet<Device> Devices { get; set; }
     public required DbSet<Action> Actions { get; set; }
     public required DbSet<Incident> Incidents { get; set; }
+    public required DbSet<Log> Logs { get; set; }
+
     public ParkManagerContext(DbContextOptions<ParkManagerContext> options) : base(options) { }
 }

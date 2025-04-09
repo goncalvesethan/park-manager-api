@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
+using ParkManagerAPI.Services;
 
 namespace ParkManagerAPI.Controllers;
 
@@ -12,10 +13,12 @@ namespace ParkManagerAPI.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ParkManagerContext _context;
+    private readonly CustomLogger _logger;
 
-    public UserController(ParkManagerContext context)
+    public UserController(ParkManagerContext context, CustomLogger logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     /// <summary>
@@ -65,11 +68,23 @@ public class UserController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "User",
+                "UserController.CreateUser",
+                $"Nouvel utilisateur créé : {request.Email}"
+            );
+            
             return CreatedAtAction(nameof(GetById), new { id = request.Id }, request);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "User",
+                "UserController.CreateUser",
+                $"Erreur création utilisateur : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
     }
@@ -96,11 +111,23 @@ public class UserController : ControllerBase
             user.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "User",
+                "UserController.UpdateUser",
+                $"Utilisateur ID {user.Id} mis à jour"
+            );
+            
             return Ok(user);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "User",
+                "UserController.UpdateUser",
+                $"Erreur mise à jour utilisateur ID {id} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
         
@@ -123,11 +150,23 @@ public class UserController : ControllerBase
             user.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "User",
+                "UserController.SetUserAsAdmin",
+                $"Utilisateur ID {user.Id} défini comme administrateur"
+            );
+            
             return Ok(user);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "User",
+                "UserController.SetUserAsAdmin",
+                $"Erreur lors de la promotion de l'utilisateur ID {id} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
         
@@ -152,11 +191,23 @@ public class UserController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "User",
+                "UserController.SofDeleteUser",
+                $"Utilisateur ID {user.Id} supprimé logiquement"
+            );
+            
             return NoContent();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "User",
+                "UserController.SofDeleteUser",
+                $"Erreur suppression logique utilisateur ID {id} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
     }
