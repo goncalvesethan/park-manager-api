@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
+using ParkManagerAPI.Services;
 using Action = ParkManagerAPI.Models.Action;
 
 namespace ParkManagerAPI.Controllers;
@@ -13,10 +14,12 @@ namespace ParkManagerAPI.Controllers;
 public class IncidentController : ControllerBase
 {
     private readonly ParkManagerContext _context;
+    private readonly CustomLogger _logger;
 
-    public IncidentController(ParkManagerContext context)
+    public IncidentController(ParkManagerContext context, CustomLogger logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     /// <summary>
@@ -67,11 +70,18 @@ public class IncidentController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Incident",
+                "IncidentController.CreateAction",
+                $"Incident créé pour le poste ID {request.DeviceId} par l’utilisateur ID {request.ReporterId}"
+            );
+            
             return CreatedAtAction(nameof(GetById), new { id = request.Id }, request);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync("error", "Incident", "IncidentController.CreateAction", $"Erreur de création de l'incident : {e.Message}");
             return StatusCode(500, "500 - Internal server error");
         }
     }
@@ -92,14 +102,21 @@ public class IncidentController : ControllerBase
 
             incident.Status = "closed";
             incident.UpdatedAt = DateTime.Now;
-
+            
             await _context.SaveChangesAsync();
-
+            
+            await _logger.LogAsync(
+                "info",
+                "Incident",
+                "IncidentController.SetAsClosed",
+                $"Incident ID {incident.Id} marqué comme fermé"
+            );
+            
             return Ok(incident);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync("error", "Incident", "IncidentController.SetAsClosed", $"Erreur de fermeture l'incident ID {id} : {e.Message}");
             return StatusCode(500, "500 - Internal server error");
         }
     }
@@ -127,11 +144,18 @@ public class IncidentController : ControllerBase
             incident.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Incident",
+                "IncidentController.UpdateDevice",
+                $"Incident ID {incident.Id} mis à jour"
+            );
+            
             return Ok(incident);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync("error", "Incident", "IncidentController.UpdateDevice", $"Erreur de la MAJ de l'incident ID {id} : {e.Message}");
             return StatusCode(500, "500 - Internal server error");
         }
         
@@ -156,11 +180,18 @@ public class IncidentController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Incident",
+                "IncidentController.SofDeletePark",
+                $"Incident ID {incident.Id} supprimé logiquement (soft delete)"
+            );
+            
             return NoContent();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync("error", "Incident", "IncidentController.SofDeletePark", $"Erreur de la suppression logique de l'incident ID {id} : {e.Message}");
             return StatusCode(500, "500 - Internal server error");
         }
     }

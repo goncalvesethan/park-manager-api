@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
+using ParkManagerAPI.Services;
 
 namespace ParkManagerAPI.Controllers;
 
@@ -12,10 +13,12 @@ namespace ParkManagerAPI.Controllers;
 public class ParkController : ControllerBase
 {
     private readonly ParkManagerContext _context;
+    private readonly CustomLogger _logger;
 
-    public ParkController(ParkManagerContext context)
+    public ParkController(ParkManagerContext context, CustomLogger logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     /// <summary>
@@ -65,11 +68,23 @@ public class ParkController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Park",
+                "ParkController.CreatePark",
+                $"Nouveau parc créé : {request.Name}"
+            );
+            
             return CreatedAtAction(nameof(GetById), new { id = request.Id }, request);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Park",
+                "ParkController.CreatePark",
+                $"Erreur création parc : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
     }
@@ -93,11 +108,23 @@ public class ParkController : ControllerBase
             park.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Park",
+                "ParkController.UpdatePark",
+                $"Parc ID {park.Id} mis à jour"
+            );
+            
             return Ok(park);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Park",
+                "ParkController.UpdatePark",
+                $"Erreur mise à jour parc ID {id} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
         
@@ -122,11 +149,23 @@ public class ParkController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Park",
+                "ParkController.SofDeletePark",
+                $"Parc ID {park.Id} supprimé logiquement"
+            );
+            
             return NoContent();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Park",
+                "ParkController.SofDeletePark",
+                $"Erreur suppression logique parc ID {id} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
     }
