@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
+using ParkManagerAPI.Services;
 
 namespace ParkManagerAPI.Controllers;
 
@@ -12,9 +13,11 @@ namespace ParkManagerAPI.Controllers;
 public class RoomController : ControllerBase
 {
     private readonly ParkManagerContext _context;
+    private readonly CustomLogger _logger;
 
-    public RoomController(ParkManagerContext context)
+    public RoomController(ParkManagerContext context, CustomLogger logger)
     {
+        _logger = logger;
         _context = context;
     }
 
@@ -65,11 +68,23 @@ public class RoomController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Room",
+                "RoomController.CreateRoom",
+                $"Nouvelle salle créée : {request.Name}"
+            );
+            
             return CreatedAtAction(nameof(GetById), new { id = request.Id }, request);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Room",
+                "RoomController.CreateRoom",
+                $"Erreur création salle : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
     }
@@ -95,11 +110,23 @@ public class RoomController : ControllerBase
             room.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Room",
+                "RoomController.UpdateRoom",
+                $"Salle ID {room.Id} mise à jour"
+            );
+            
             return Ok(room);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Room",
+                "RoomController.UpdateRoom",
+                $"Erreur mise à jour salle ID {id} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
         
@@ -122,13 +149,25 @@ public class RoomController : ControllerBase
             room.UpdatedAt = DateTime.Now;
             room.DeletedAt = DateTime.Now;
             
+            await _logger.LogAsync(
+                "info",
+                "Room",
+                "RoomController.SofDeleteRoom",
+                $"Salle ID {room.Id} supprimée logiquement"
+            );
+            
             await _context.SaveChangesAsync();
             
             return NoContent();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Room",
+                "RoomController.SofDeleteRoom",
+                $"Erreur suppression logique salle ID {id} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
     }

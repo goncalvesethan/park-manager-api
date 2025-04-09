@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkManagerAPI.Models;
+using ParkManagerAPI.Services;
 
 namespace ParkManagerAPI.Controllers;
 
@@ -12,10 +13,12 @@ namespace ParkManagerAPI.Controllers;
 public class DeviceController : ControllerBase
 {
     private readonly ParkManagerContext _context;
+    private readonly CustomLogger _logger;
 
-    public DeviceController(ParkManagerContext context)
+    public DeviceController(ParkManagerContext context, CustomLogger logger)
     {
         _context = context;
+        _logger = logger;
     }
     
     /// <summary>
@@ -65,11 +68,23 @@ public class DeviceController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Device",
+                "DeviceController.CreateDevice",
+                $"Nouveau poste créé : {request.MacAddress}"
+            );
+            
             return CreatedAtAction(nameof(GetById), new { id = request.Id }, request);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Device",
+                "DeviceController.CreateDevice",
+                $"Erreur lors de la création d'un poste : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
     }
@@ -100,11 +115,23 @@ public class DeviceController : ControllerBase
             device.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Device",
+                "DeviceController.UpdateDevice",
+                $"Informations mises à jour pour le poste {device.Id}"
+            );
+            
             return Ok(device);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Device",
+                "DeviceController.UpdateDevice(mac)",
+                $"Erreur lors de la mise à jours des informations pour le poste ID {id} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
         
@@ -130,11 +157,23 @@ public class DeviceController : ControllerBase
 
             await _context.SaveChangesAsync();
 
+            await _logger.LogAsync(
+                "info",
+                "Device",
+                "DeviceController.SetDeviceOffline",
+                $"Poste ID {device.Id} (MAC {macAddress}) mis hors ligne"
+            );
+            
             return Ok(device);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Device",
+                "DeviceController.SetDeviceOffline",
+                $"Erreur lors de la mise hors ligne du poste MAC {macAddress} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
     }
@@ -163,11 +202,23 @@ public class DeviceController : ControllerBase
             device.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Device",
+                "DeviceController.UpdateDevice(mac)",
+                $"Informations remontées pour le poste {device.Id} (MAC {macAddress})"
+            );
+            
             return Ok(device);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Device",
+                "DeviceController.UpdateDevice(mac)",
+                $"Erreur lors de la remontée d'infos pour le poste MAC {macAddress} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
         
@@ -192,11 +243,23 @@ public class DeviceController : ControllerBase
             
             await _context.SaveChangesAsync();
             
+            await _logger.LogAsync(
+                "info",
+                "Device",
+                "DeviceController.SofDeleteDevice",
+                $"Poste ID {device.Id} supprimé logiquement (soft delete)"
+            );
+            
             return NoContent();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            await _logger.LogAsync(
+                "error",
+                "Device",
+                "DeviceController.SofDeleteDevice",
+                $"Erreur lors de la suppression logique du poste ID {id} : {e.Message}"
+            );
             return StatusCode(500, "500 - Internal server error");
         }
     }

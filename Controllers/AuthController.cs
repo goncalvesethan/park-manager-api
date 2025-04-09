@@ -12,11 +12,13 @@ public class AuthController : ControllerBase
 {
     private readonly JwtService _jwtService;
     private readonly ParkManagerContext _context;
+    private readonly CustomLogger _logger;
 
-    public AuthController(JwtService jwtService, ParkManagerContext dbContext)
+    public AuthController(JwtService jwtService, ParkManagerContext dbContext, CustomLogger logger)
     {
         _jwtService = jwtService;
         _context = dbContext;
+        _logger = logger;
     }
     
     /// <summary>
@@ -33,10 +35,13 @@ public class AuthController : ControllerBase
 
         if (user == null)
         {
+            await _logger.LogAsync("warning", "Login", "AuthController.Login", $"Échec de connexion pour l'email : {request.Email}");
             return Unauthorized();
         }
 
         var token = _jwtService.GenerateJwtToken(user);
+        
+        await _logger.LogAsync("auth", "Login", "AuthController.Login", $"User {user.Id} logged in successfully.");
         return Ok(new { Token = token });
     }
 }
